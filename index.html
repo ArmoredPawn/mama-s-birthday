@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Mama</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Pinyon+Script&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#2b1e33;
+    --night-deep:#221728;
+    --flame:#f5c86b;
+    --flame-hot:#e8843c;
+    --frosting:#f2a6b8;
+    --cream:#fff4e4;
+    --mint:#bfe3c0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--night);
+    color:var(--cream);
+    font-family:'Karla',sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--frosting);color:var(--night);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:3rem 1.25rem 4rem;
+    position:relative;
+    background:radial-gradient(ellipse 90% 60% at 50% 62%, #43304e 0%, var(--night) 55%, var(--night-deep) 100%);
+    transition:background 2s ease;
+  }
+  .hero.lights-on{
+    background:radial-gradient(ellipse 100% 70% at 50% 55%, #5d4266 0%, #3a2a44 60%, var(--night) 100%);
+  }
+  .eyebrow{
+    font-family:'Karla',sans-serif;
+    font-weight:700;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    font-size:.72rem;
+    color:var(--frosting);
+    margin-bottom:1rem;
+  }
+  h1{
+    font-family:'Yeseva One',serif;
+    font-weight:400;
+    font-size:clamp(2.4rem,7vw,4.6rem);
+    line-height:1.05;
+    color:var(--cream);
+  }
+  h1 .mama{
+    font-family:'Pinyon Script',cursive;
+    display:block;
+    font-size:clamp(3.6rem,11vw,7.5rem);
+    color:var(--flame);
+    line-height:1.1;
+    margin-top:.35rem;
+    text-shadow:0 0 40px rgba(245,200,107,.35);
+  }
+  .hero-sub{
+    max-width:34ch;
+    margin:1.25rem auto 0;
+    color:#d8c6d9;
+    font-size:1.05rem;
+  }
+
+  /* ---------- CAKE ---------- */
+  .cake-wrap{
+    margin-top:2.5rem;
+    position:relative;
+    width:min(320px,80vw);
+  }
+  .cake-svg{width:100%;height:auto;display:block;overflow:visible;}
+  .candle-hit{cursor:pointer;}
+  .flame{
+    transform-origin:center bottom;
+    transform-box:fill-box;
+    animation:flicker 1.6s ease-in-out infinite;
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .flame.f2{animation-duration:1.3s;animation-delay:.2s;}
+  .flame.f3{animation-duration:1.9s;animation-delay:.5s;}
+  .flame.f4{animation-duration:1.4s;animation-delay:.8s;}
+  .flame.f5{animation-duration:1.7s;animation-delay:.3s;}
+  .flame.out{opacity:0;transform:scale(.2) translateY(6px);}
+  .glow{
+    transition:opacity .6s ease;
+    animation:breathe 3s ease-in-out infinite;
+  }
+  .glow.out{opacity:0 !important;animation:none;}
+  .smoke{
+    opacity:0;
+    transform-origin:center bottom;
+    transform-box:fill-box;
+  }
+  .smoke.puff{animation:smokeUp 1.6s ease-out forwards;}
+  @keyframes flicker{
+    0%,100%{transform:scaleY(1) skewX(0deg);}
+    30%{transform:scaleY(1.08) skewX(-3deg);}
+    60%{transform:scaleY(.94) skewX(2.5deg);}
+  }
+  @keyframes breathe{
+    0%,100%{opacity:.55;}
+    50%{opacity:.8;}
+  }
+  @keyframes smokeUp{
+    0%{opacity:.7;transform:translateY(0) scale(.6);}
+    100%{opacity:0;transform:translateY(-26px) scale(1.4);}
+  }
+
+  .candle-instruction{
+    margin-top:1.5rem;
+    font-size:.9rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--flame);
+    opacity:.9;
+    transition:opacity .5s ease;
+  }
+  .candle-instruction.done{opacity:0;pointer-events:none;}
+
+  .wish-reveal{
+    margin-top:1.25rem;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition:max-height 1.2s ease, opacity 1.2s ease .3s;
+  }
+  .wish-reveal.show{max-height:200px;opacity:1;}
+  .wish-reveal p{
+    font-family:'Yeseva One',serif;
+    font-size:clamp(1.2rem,3.4vw,1.7rem);
+    color:var(--mint);
+    max-width:26ch;
+    margin:0 auto;
+  }
+
+  /* confetti canvas */
+  #confetti{
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:50;
+  }
+
+  /* scroll hint */
+  .scroll-hint{
+    position:absolute;
+    bottom:1.4rem;left:50%;
+    transform:translateX(-50%);
+    color:#a68fae;
+    font-size:.78rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:5.5rem 1.5rem;}
+  .inner{max-width:900px;margin:0 auto;}
+  .section-title{
+    font-family:'Yeseva One',serif;
+    font-weight:400;
+    font-size:clamp(1.7rem,4.5vw,2.6rem);
+    text-align:center;
+    margin-bottom:.75rem;
+  }
+  .section-lede{
+    text-align:center;
+    color:#cbb8cd;
+    max-width:48ch;
+    margin:0 auto 3rem;
+  }
+  .accent{color:var(--frosting);}
+
+  /* wish cards */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:1.25rem;
+  }
+  .card{
+    background:linear-gradient(160deg,#3a2a44 0%, #33243d 100%);
+    border:1px solid rgba(242,166,184,.18);
+    border-radius:18px;
+    padding:1.6rem 1.4rem;
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .card:hover{transform:translateY(-4px) rotate(-.4deg);border-color:rgba(245,200,107,.5);}
+  .card:nth-child(even):hover{transform:translateY(-4px) rotate(.4deg);}
+  .card .icon{
+    font-size:1.5rem;
+    display:inline-block;
+    margin-bottom:.7rem;
+  }
+  .card h3{
+    font-family:'Yeseva One',serif;
+    font-weight:400;
+    font-size:1.15rem;
+    color:var(--flame);
+    margin-bottom:.5rem;
+  }
+  .card p{color:#e2d3e3;font-size:.96rem;line-height:1.55;}
+
+  /* letter */
+  .letter-section{background:var(--night-deep);}
+  .letter{
+    background:var(--cream);
+    color:#4a3550;
+    border-radius:6px;
+    padding:clamp(1.8rem,5vw,3.2rem);
+    max-width:640px;
+    margin:0 auto;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
+    transform:rotate(-.6deg);
+    position:relative;
+  }
+  .letter::before{
+    content:"";
+    position:absolute;
+    top:-14px;left:50%;
+    transform:translateX(-50%) rotate(2deg);
+    width:120px;height:28px;
+    background:rgba(242,166,184,.55);
+    border-left:1px dashed rgba(255,255,255,.7);
+    border-right:1px dashed rgba(255,255,255,.7);
+  }
+  .letter .salutation{
+    font-family:'Pinyon Script',cursive;
+    font-size:2.2rem;
+    color:#b0486a;
+    margin-bottom:1rem;
+  }
+  .letter p{line-height:1.75;margin-bottom:1.1rem;font-size:1.02rem;}
+  .letter .signoff{
+    font-family:'Pinyon Script',cursive;
+    font-size:1.9rem;
+    color:#b0486a;
+    margin-top:1.6rem;
+    margin-bottom:0;
+    text-align:right;
+  }
+
+  /* footer */
+  footer{
+    text-align:center;
+    padding:3rem 1.5rem 3.5rem;
+    color:#a68fae;
+    font-size:.88rem;
+  }
+  footer .hearts{font-size:1.2rem;letter-spacing:.4em;display:block;margin-bottom:.6rem;}
+
+  /* reveal on scroll */
+  .fade-up{opacity:0;transform:translateY(24px);transition:opacity .8s ease, transform .8s ease;}
+  .fade-up.visible{opacity:1;transform:none;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important;}
+    .fade-up{opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<header class="hero" id="hero">
+  <p class="eyebrow">A very special day for a very special person</p>
+  <h1>Happy Birthday,<span class="mama">Mama</span></h1>
+  <p class="hero-sub">Today the whole world gets a little brighter — because it's your day.</p>
+
+  <div class="cake-wrap">
+    <svg class="cake-svg" viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" aria-label="Birthday cake with five candles">
+      <!-- glow -->
+      <ellipse class="glow" cx="160" cy="90" rx="130" ry="70" fill="url(#glowGrad)" opacity=".6"/>
+      <defs>
+        <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f5c86b" stop-opacity=".5"/>
+          <stop offset="100%" stop-color="#f5c86b" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="#e8843c"/>
+          <stop offset="60%" stop-color="#f5c86b"/>
+          <stop offset="100%" stop-color="#fff4e4"/>
+        </linearGradient>
+      </defs>
+
+      <!-- plate -->
+      <ellipse cx="160" cy="272" rx="140" ry="18" fill="#1c1322"/>
+      <ellipse cx="160" cy="268" rx="132" ry="15" fill="#d8c6d9"/>
+
+      <!-- bottom tier -->
+      <rect x="50" y="200" width="220" height="66" rx="10" fill="#f2a6b8"/>
+      <path d="M50 210 q13 16 27 0 q14 16 27 0 q14 16 27 0 q14 16 28 0 q14 16 27 0 q14 16 28 0 q14 16 27 0 q14 16 29 0 v-12 h-220 z" fill="#fff4e4"/>
+      <circle cx="80" cy="245" r="4" fill="#bfe3c0"/>
+      <circle cx="130" cy="252" r="4" fill="#f5c86b"/>
+      <circle cx="185" cy="246" r="4" fill="#bfe3c0"/>
+      <circle cx="240" cy="251" r="4" fill="#f5c86b"/>
+
+      <!-- top tier -->
+      <rect x="88" y="146" width="144" height="58" rx="9" fill="#fff4e4"/>
+      <path d="M88 156 q11 14 22 0 q12 14 23 0 q12 14 23 0 q12 14 24 0 q12 14 23 0 q12 14 29 0 v-11 h-144 z" fill="#f2a6b8"/>
+
+      <!-- candles: (cx positions) 108,134,160,186,212 -->
+      <g class="candle-hit" data-i="0">
+        <rect x="104" y="108" width="9" height="40" rx="3" fill="#bfe3c0"/>
+        <rect x="104" y="118" width="9" height="5" fill="#fff4e4" opacity=".7"/>
+        <line x1="108.5" y1="104" x2="108.5" y2="110" stroke="#4a3550" stroke-width="1.6"/>
+        <ellipse class="flame f1" cx="108.5" cy="97" rx="6" ry="11" fill="url(#flameGrad)"/>
+        <circle class="smoke" cx="108.5" cy="98" r="5" fill="#d8c6d9"/>
+        <rect x="96" y="84" width="26" height="70" fill="transparent"/>
+      </g>
+      <g class="candle-hit" data-i="1">
+        <rect x="130" y="100" width="9" height="48" rx="3" fill="#f5c86b"/>
+        <rect x="130" y="112" width="9" height="5" fill="#fff4e4" opacity=".7"/>
+        <line x1="134.5" y1="96" x2="134.5" y2="102" stroke="#4a3550" stroke-width="1.6"/>
+        <ellipse class="flame f2" cx="134.5" cy="89" rx="6" ry="11" fill="url(#flameGrad)"/>
+        <circle class="smoke" cx="134.5" cy="90" r="5" fill="#d8c6d9"/>
+        <rect x="122" y="76" width="26" height="76" fill="transparent"/>
+      </g>
+      <g class="candle-hit" data-i="2">
+        <rect x="156" y="94" width="9" height="54" rx="3" fill="#f2a6b8"/>
+        <rect x="156" y="108" width="9" height="5" fill="#fff4e4" opacity=".7"/>
+        <line x1="160.5" y1="90" x2="160.5" y2="96" stroke="#4a3550" stroke-width="1.6"/>
+        <ellipse class="flame f3" cx="160.5" cy="83" rx="6" ry="11" fill="url(#flameGrad)"/>
+        <circle class="smoke" cx="160.5" cy="84" r="5" fill="#d8c6d9"/>
+        <rect x="148" y="70" width="26" height="82" fill="transparent"/>
+      </g>
+      <g class="candle-hit" data-i="3">
+        <rect x="182" y="100" width="9" height="48" rx="3" fill="#bfe3c0"/>
+        <rect x="182" y="112" width="9" height="5" fill="#fff4e4" opacity=".7"/>
+        <line x1="186.5" y1="96" x2="186.5" y2="102" stroke="#4a3550" stroke-width="1.6"/>
+        <ellipse class="flame f4" cx="186.5" cy="89" rx="6" ry="11" fill="url(#flameGrad)"/>
+        <circle class="smoke" cx="186.5" cy="90" r="5" fill="#d8c6d9"/>
+        <rect x="174" y="76" width="26" height="76" fill="transparent"/>
+      </g>
+      <g class="candle-hit" data-i="4">
+        <rect x="208" y="108" width="9" height="40" rx="3" fill="#f5c86b"/>
+        <rect x="208" y="118" width="9" height="5" fill="#fff4e4" opacity=".7"/>
+        <line x1="212.5" y1="104" x2="212.5" y2="110" stroke="#4a3550" stroke-width="1.6"/>
+        <ellipse class="flame f5" cx="212.5" cy="97" rx="6" ry="11" fill="url(#flameGrad)"/>
+        <circle class="smoke" cx="212.5" cy="98" r="5" fill="#d8c6d9"/>
+        <rect x="200" y="84" width="26" height="70" fill="transparent"/>
+      </g>
+    </svg>
+  </div>
+
+  <p class="candle-instruction" id="instruction">Tap the candles to help Mama blow them out ✦</p>
+
+  <div class="wish-reveal" id="wishReveal">
+    <p>Your wish is on its way, Mama. We love you more than words can say.</p>
+  </div>
+
+  <span class="scroll-hint">scroll for more ♡</span>
+</header>
+
+<section>
+  <div class="inner">
+    <h2 class="section-title fade-up">A few of the <span class="accent">million reasons</span> we love you</h2>
+    <p class="section-lede fade-up">Edit these cards to add your own — every family has its own favorites.</p>
+    <div class="cards">
+      <div class="card fade-up">
+        <span class="icon">🍲</span>
+        <h3>Your cooking</h3>
+        <p>No restaurant on Earth comes close. One taste of your food and everything feels like home again.</p>
+      </div>
+      <div class="card fade-up">
+        <span class="icon">🤗</span>
+        <h3>Your hugs</h3>
+        <p>Somehow they fix bad days, calm big worries, and make everything okay — every single time.</p>
+      </div>
+      <div class="card fade-up">
+        <span class="icon">💪</span>
+        <h3>Your strength</h3>
+        <p>You've carried this family through everything with grace, grit, and a smile that never quits.</p>
+      </div>
+      <div class="card fade-up">
+        <span class="icon">😂</span>
+        <h3>Your laugh</h3>
+        <p>It's contagious, it's the best sound in the house, and it turns ordinary moments into memories.</p>
+      </div>
+      <div class="card fade-up">
+        <span class="icon">🧠</span>
+        <h3>Your wisdom</h3>
+        <p>You always know what to say — even when we pretend we're not listening. (We are. Always.)</p>
+      </div>
+      <div class="card fade-up">
+        <span class="icon">❤️</span>
+        <h3>Your heart</h3>
+        <p>The biggest one we know. You love everyone around you fiercely, and we feel it every day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="letter-section">
+  <div class="inner">
+    <h2 class="section-title fade-up">A note, just for you</h2>
+    <p class="section-lede fade-up">Swap in your own words — this is your letter to her.</p>
+    <div class="letter fade-up">
+      <p class="salutation">Dear Mama,</p>
+      <p>Another year of you means another year the world got luckier. Thank you for every packed lunch, every late-night talk, every sacrifice we didn't notice until we were old enough to understand.</p>
+      <p>You taught us how to be kind, how to work hard, and how to laugh at ourselves. Everything good in us started with you.</p>
+      <p>Today we celebrate you — not just the birthday, but every single day you've made brighter simply by being in it.</p>
+      <p class="signoff">With all our love ♡</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="hearts">♡ ♡ ♡</span>
+  Made with love, for the best Mama in the world.
+</footer>
+
+<script>
+(function(){
+  const flames = document.querySelectorAll('.flame');
+  const smokes = document.querySelectorAll('.smoke');
+  const hits = document.querySelectorAll('.candle-hit');
+  const glow = document.querySelector('.glow');
+  const hero = document.getElementById('hero');
+  const instruction = document.getElementById('instruction');
+  const wishReveal = document.getElementById('wishReveal');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let outCount = 0;
+  const outSet = new Set();
+
+  hits.forEach(function(g){
+    g.addEventListener('click', function(){
+      const i = parseInt(g.dataset.i, 10);
+      if(outSet.has(i)) return;
+      outSet.add(i);
+      flames[i].classList.add('out');
+      smokes[i].classList.add('puff');
+      outCount++;
+      if(outCount === flames.length){
+        glow.classList.add('out');
+        instruction.classList.add('done');
+        hero.classList.add('lights-on');
+        wishReveal.classList.add('show');
+        if(!reduced) launchConfetti();
+      }
+    });
+  });
+
+  /* ---- confetti ---- */
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let pieces = [];
+  let rafId = null;
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const colors = ['#f5c86b','#f2a6b8','#bfe3c0','#fff4e4','#e8843c'];
+
+  function launchConfetti(){
+    pieces = [];
+    for(let i=0;i<160;i++){
+      pieces.push({
+        x: Math.random()*canvas.width,
+        y: -20 - Math.random()*canvas.height*0.5,
+        w: 6+Math.random()*6,
+        h: 8+Math.random()*8,
+        vy: 2+Math.random()*3,
+        vx: -1.5+Math.random()*3,
+        rot: Math.random()*Math.PI*2,
+        vr: -0.1+Math.random()*0.2,
+        color: colors[Math.floor(Math.random()*colors.length)]
+      });
+    }
+    if(rafId) cancelAnimationFrame(rafId);
+    const start = performance.now();
+    function frame(now){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(function(p){
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      });
+      pieces = pieces.filter(function(p){ return p.y < canvas.height + 30; });
+      if(pieces.length && now - start < 9000){
+        rafId = requestAnimationFrame(frame);
+      } else {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  /* ---- scroll reveals ---- */
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  },{threshold:0.15});
+  document.querySelectorAll('.fade-up').forEach(function(el){ observer.observe(el); });
+})();
+</script>
+</body>
+</html>
